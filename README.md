@@ -1,9 +1,6 @@
 # Fashion Creator Platform
 
 A web application for generating social media content ideas tailored to specific niches (e.g., fashion, finance) using AI. The platform features a **React frontend** with a **glassmorphism UI** and a **Node.js/Express backend** integrated with **MongoDB** and **OpenRouter's API**.
-
-> ⚠️ **Note:** Generated content is processed **in-memory** and sent to the client but **is not stored in the database** or any persistent storage for privacy and efficiency.
-
 ---
 
 ## 📚 Table of Contents
