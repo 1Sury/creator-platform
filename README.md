@@ -51,9 +51,4 @@ A web application for generating social media content ideas tailored to specific
 
 ---
 
-## 💻 Installation
 
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/your-username/fashion-creator-platform.git
-cd fashion-creator-platform
