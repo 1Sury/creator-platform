@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 function Chat() {
   const [topic, setTopic] = useState('');
@@ -8,7 +7,6 @@ function Chat() {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const niches = ['fashion', 'fitness', 'finance', 'food', 'travel'];
 
   const handleSubmit = async () => {
@@ -29,54 +27,56 @@ function Chat() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between mb-6">
-          <h2 className="text-2xl font-bold">Content Idea Assistant</h2>
-          <div>
-            <Link to="/history" className="mr-4 text-blue-500 hover:underline">View History</Link>
-            <Link to="/analytics" className="text-blue-500 hover:underline">View Analytics</Link>
-          </div>
+    <div className="max-w-3xl mx-auto">
+      <div className="chatgpt-card fade-in">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">Content Idea Assistant</h2>
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Enter a topic (e.g., Summer Trends)"
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            className="chatgpt-input"
+          />
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Enter a topic..."
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="mb-6">
-            <select
-              value={niche}
-              onChange={(e) => setNiche(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {niches.map((n) => (
-                <option key={n} value={n}>{n.charAt(0).toUpperCase() + n.slice(1)}</option>
-              ))}
-            </select>
-          </div>
-          <button
-            onClick={handleSubmit}
-            disabled={loading || !topic}
-            className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400"
+        <div className="mb-8">
+          <select
+            value={niche}
+            onChange={(e) => setNiche(e.target.value)}
+            className="chatgpt-input"
           >
-            {loading ? 'Generating...' : 'Generate Content'}
-          </button>
-          {error && <p className="text-red-500 mt-4">{error}</p>}
-          {response && (
-            <div className="mt-6 p-6 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold mb-2">Generated Content</h3>
-              <p><strong>Reel Idea:</strong> {response.reelIdea}</p>
-              <p><strong>Hook:</strong> {response.hook}</p>
-              <p><strong>Caption:</strong> {response.caption}</p>
-              <p><strong>Hashtags:</strong> {response.hashtags?.join(', ')}</p>
-            </div>
-          )}
+            {niches.map((n) => (
+              <option key={n} value={n}>{n.charAt(0).toUpperCase() + n.slice(1)}</option>
+            ))}
+          </select>
         </div>
+        <button
+          onClick={handleSubmit}
+          disabled={loading || !topic}
+          className="chatgpt-button w-full"
+        >
+          {loading ? (
+            <span className="flex items-center justify-center">
+              <svg className="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Generating...
+            </span>
+          ) : (
+            'Generate Content'
+          )}
+        </button>
+        {error && <p className="text-red-400 mt-6 text-center animate-pulse">{error}</p>}
+        {response && (
+          <div className="mt-8 p-6 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-600 rounded-xl fade-in">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Generated Content</h3>
+            <p className="text-gray-700 dark:text-gray-200 mb-2"><strong>Reel Idea:</strong> {response.reelIdea}</p>
+            <p className="text-gray-700 dark:text-gray-200 mb-2"><strong>Hook:</strong> {response.hook}</p>
+            <p className="text-gray-700 dark:text-gray-200 mb-2"><strong>Caption:</strong> {response.caption}</p>
+            <p className="text-gray-700 dark:text-gray-200"><strong>Hashtags:</strong> {response.hashtags?.join(', ')}</p>
+          </div>
+        )}
       </div>
     </div>
   );
