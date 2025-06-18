@@ -1,0 +1,20 @@
+{
+    "name": "fashion-creator-platform",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "client",
+        "server"
+    ],
+    "scripts": {
+        "start": "npm run start --workspace=client & npm run start --workspace=server",
+        "build": "npm run build --workspace=client",
+        "server": "npm run start --workspace=server",
+        "client": "npm run start --workspace=client",
+        "install-all": "npm install && npm install --workspace=client && npm install --workspace=server"
+    },
+    "devDependencies": {},
+    "description": "A platform for generating social media content ideas using AI.",
+    "repository": "https://github.com/1Sury/creator-platform",
+    "license": "MIT"
+}
