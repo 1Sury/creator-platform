@@ -26,14 +26,23 @@ const authMiddleware = (req, res, next) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 };
-
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
-  if (username && password) {
+  console.log('Login attempt:', { username, password });
+  const validUsername = 'test';
+  const validPassword = 'test123';
+
+  if (!username || !password) {
+    console.log('Missing credentials');
+    return res.status(400).json({ message: 'Username and password are required' });
+  }
+  if (username.toLowerCase() === validUsername.toLowerCase() && password === validPassword) {
+    console.log('Login successful');
     const token = jwt.sign({ userId: username }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
   } else {
-    res.status(400).json({ message: 'Invalid credentials' });
+    console.log('Invalid credentials');
+    res.status(400).json({ message: 'Invalid username or password' });
   }
 });
 
@@ -47,6 +56,7 @@ app.post('/api/content', authMiddleware, async (req, res) => {
     return res.status(400).json({ message: 'Topic and niche are required' });
   }
   try {
+    console.log('Sending request to OpenRouter:', { topic, niche });
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
@@ -57,7 +67,7 @@ app.post('/api/content', authMiddleware, async (req, res) => {
             content: `Generate a social media content idea for a ${niche} niche about ${topic}. Respond **only** with a JSON object containing: reelIdea (string), hook (string), caption (string), hashtags (array of strings). Do not include any additional text, explanations, or markdown. Example: {"reelIdea":"Outfit of the Day","hook":"Style on a budget!","caption":"Check out this chic look...","hashtags":["#Fashion","#Style"]}`
           }
         ],
-        max_tokens: 500, // Limit response size
+        max_tokens: 500,
       },
       {
         headers: {
@@ -89,10 +99,11 @@ app.post('/api/content', authMiddleware, async (req, res) => {
       content: parsedContent
     });
     await newContent.save();
+    console.log('Content saved to MongoDB:', parsedContent); // Add this
 
     res.json(parsedContent);
   } catch (err) {
-    console.error('OpenRouter API error:', err.response?.data || err.message);
+    console.error('OpenRouter API error:', err.response?.status, JSON.stringify(err.response?.data || err.message, null, 2)); // Enhanced logging
     if (err.response?.status === 401) {
       res.status(500).json({ message: 'Invalid OpenRouter API key.' });
     } else if (err.response?.status === 402) {
@@ -143,7 +154,6 @@ app.get('/api/analytics/export', authMiddleware, async (req, res) => {
   res.send(JSON.stringify(analytics, null, 2));
 });
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => {

@@ -13,14 +13,17 @@ function Chat() {
     setLoading(true);
     setError('');
     try {
+      console.log('Sending content request:', JSON.stringify({ topic, niche }, null, 2)); // Improved logging
       const res = await axios.post('http://localhost:5000/api/content', {
         topic,
         niche,
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
+      console.log('Content response:', res.data);
       setResponse(res.data);
     } catch (err) {
+      console.error('Content error:', JSON.stringify(err.response?.data || err.message, null, 2)); // Improved logging
       setError('Failed to generate content. Please try again.');
     }
     setLoading(false);
